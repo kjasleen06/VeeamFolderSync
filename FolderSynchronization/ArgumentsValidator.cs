@@ -42,7 +42,7 @@ namespace FolderSynchronization
             if (!int.TryParse(input, out intervalSeconds) || intervalSeconds <= 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"⚠ Invalid interval '{input}'. Must be a positive integer.");
+                Console.WriteLine($"Invalid interval '{input}'. Must be a positive integer.");
                 Console.ResetColor();
                 Console.WriteLine("Press any key to exit...");
                 Console.ReadKey();
@@ -57,7 +57,7 @@ namespace FolderSynchronization
         private static void ShowUsage(string errorMessage)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"⚠ {errorMessage}");
+            Console.WriteLine($"{errorMessage}");
             Console.ResetColor();
             Console.WriteLine("Usage: FolderSynchronization.exe <sourceFolder> <replicaFolder> <intervalSeconds> <logFilePath>");
             Console.WriteLine(@"Example: FolderSynchronization.exe C:\Source C:\Replica 5 C:\Logs\sync_log.txt");

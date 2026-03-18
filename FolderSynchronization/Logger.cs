@@ -33,7 +33,7 @@ namespace FolderSynchronization
                 string fallbackLogFile = Path.Combine(exeFolder, "sync_log.txt");
                 File.WriteAllText(fallbackLogFile, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
                 logFile = fallbackLogFile;
-                Console.WriteLine("⚠ User-provided log file path was invalid or inaccessible.");
+                Console.WriteLine("User-provided log file path was invalid or inaccessible.");
                 Console.WriteLine($"Using fallback log file in executable folder: {logFile}");
             }
 
@@ -56,7 +56,7 @@ namespace FolderSynchronization
             }
             catch
             {
-                Console.WriteLine($"⚠ Failed to write to log file: {_logFilePath}");
+                Console.WriteLine($"Failed to write to log file: {_logFilePath}");
             }
         }
     }
