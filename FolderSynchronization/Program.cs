@@ -7,6 +7,7 @@ namespace FolderSynchronization
     {
         static async Task Main(string[] args)
         {
+            Console.WriteLine("");
             // Validate and parse arguments
             if (!ArgumentsValidator.TryParse(args,
                 out string sourcePath,
