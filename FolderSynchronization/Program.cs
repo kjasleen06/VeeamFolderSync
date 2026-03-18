@@ -1,21 +1,27 @@
 ﻿using System;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace FolderSynchronization
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            // 1️⃣ Validate and parse arguments
-            if (!ArgumentsValidator.TryParse(args, out string sourcePath, out string replicaPath, out int intervalSeconds, out string logFilePath))
-                return;
+            // Validate and parse arguments
+            if (!ArgumentsValidator.TryParse(args,
+                out string sourcePath,
+                out string replicaPath,
+                out int intervalSeconds,
+                out string logFilePath))
+            {
+                return; // exit gracefully if arguments are invalid
+            }
 
-            // 2️⃣ Initialize logger
+            // Initialize logger
             Logger logger = Logger.Create(logFilePath);
 
-            // 3️⃣ Validate source folder
-            if (!Directory.Exists(sourcePath))
+            // Check if source folder exists
+            if (!System.IO.Directory.Exists(sourcePath))
             {
                 logger.Warning($"Source folder does not exist: {sourcePath}");
                 return;
@@ -23,61 +29,24 @@ namespace FolderSynchronization
 
             logger.Debug("Folder synchronization started...");
 
-            // 4️⃣ Flow only: you can now call FolderSynchronizer here
-            // Example: var synchronizer = new FolderSynchronizer(logger);
-            //          synchronizer.SyncFolders(sourcePath, replicaPath);
-        }
-    }
+            // Initialize the synchronizer
+            var synchronizer = new FolderSynchronizer(logger);
 
-    public static class ArgumentsValidator
-    {
-        public static bool TryParse(string[] args, out string sourcePath, out string replicaPath, out int intervalSeconds, out string logFilePath)
-        {
-            sourcePath = replicaPath = logFilePath = string.Empty;
-            intervalSeconds = 0;
-
-            if (args.Length != 4)
+            // Synchronization loop
+            while (true)
             {
-                ShowUsage("Incorrect number of arguments.");
-                return false;
+                try
+                {
+                    synchronizer.SyncFolders(sourcePath, replicaPath);
+                }
+                catch (Exception ex)
+                {
+                    logger.Warning($"Error during sync: {ex.Message}");
+                }
+
+                // Wait for the next interval
+                await Task.Delay(intervalSeconds * 1000);
             }
-
-            sourcePath = args[0];
-            replicaPath = args[1];
-            logFilePath = args[3];
-
-            if (!TryParseInterval(args[2], out intervalSeconds))
-                return false;
-
-            return true;
-        }
-
-        private static bool TryParseInterval(string input, out int intervalSeconds)
-        {
-            intervalSeconds = 0;
-
-            if (!int.TryParse(input, out intervalSeconds) || intervalSeconds <= 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"⚠ Invalid interval '{input}'. Must be a positive integer.");
-                Console.ResetColor();
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
-                return false;
-            }
-
-            return true;
-        }
-
-        private static void ShowUsage(string errorMessage)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"⚠ {errorMessage}");
-            Console.ResetColor();
-            Console.WriteLine("Usage: FolderSynchronization.exe <sourceFolder> <replicaFolder> <intervalSeconds> <logFilePath>");
-            Console.WriteLine(@"Example: FolderSynchronization.exe C:\Source C:\Replica 5 C:\Logs\sync_log.txt");
-            Console.WriteLine("\nPress any key to exit...");
-            Console.ReadKey();
         }
     }
 }
