@@ -7,7 +7,7 @@ namespace FolderSynchronization
     {
         static async Task Main(string[] args)
         {
-            // 1️⃣ Validate and parse arguments
+            //Validate and parse arguments
             if (!ArgumentsValidator.TryParse(args,
                 out string sourcePath,
                 out string replicaPath,
@@ -17,10 +17,10 @@ namespace FolderSynchronization
                 return; // exit gracefully if arguments are invalid
             }
 
-            // 2️⃣ Initialize logger
+            //Initialize logger
             Logger logger = Logger.Create(logFilePath);
 
-            // 3️⃣ Check if source folder exists
+            //Check if source folder exists
             if (!System.IO.Directory.Exists(sourcePath))
             {
                 logger.Warning($"Source folder does not exist: {sourcePath}");
@@ -29,10 +29,10 @@ namespace FolderSynchronization
 
             logger.Debug("Folder synchronization started...");
 
-            // 4️⃣ Initialize the synchronizer
+            //Initialize the synchronizer
             var synchronizer = new FolderSynchronizer(logger);
 
-            // 5️⃣ Synchronization loop
+            //Synchronization loop
             while (true)
             {
                 try
