@@ -59,7 +59,7 @@ namespace FolderSynchronization
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"{errorMessage}");
             Console.ResetColor();
-            Console.WriteLine("Usage: FolderSynchronization.exe <sourceFolder> <replicaFolder> <intervalSeconds> <logFilePath>");
+            Console.WriteLine("Usage: FolderSynchronization.exe <sourceFolder> <replicaFolder> <intervalInSeconds> <logFilePath>");
             Console.WriteLine(@"Example: FolderSynchronization.exe C:\Source C:\Replica 5 C:\Logs\sync_log.txt");
             Console.WriteLine("\nPress any key to exit...");
             Console.ReadKey();

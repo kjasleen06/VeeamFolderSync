@@ -17,16 +17,17 @@ namespace FolderSynchronization
                 return; // exit gracefully if arguments are invalid
             }
 
-            // Initialize logger
-            Logger logger = Logger.Create(logFilePath);
+
 
             // Check if source folder exists
-            if (!System.IO.Directory.Exists(sourcePath))
+            if (!System.IO.Directory.Exists(sourcePath) || !System.IO.Directory.Exists(replicaPath))
             {
-                logger.Warning($"Source folder does not exist: {sourcePath}");
+                Console.WriteLine($"Folder does not exist: {sourcePath}");
                 return;
             }
 
+            // Initialize logger
+            Logger logger = Logger.Create(logFilePath);
             logger.Debug("Folder synchronization started...");
 
             // Initialize the synchronizer
