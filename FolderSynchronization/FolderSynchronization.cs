@@ -94,7 +94,6 @@ namespace FolderSynchronization
                         Directory.CreateDirectory(replicaFolderSubDirPath);
                         _log.Debug($"Created directory operation : {replicaFolderSubDirPath}");
                     }
-
                     SyncFolders(sourceFolderSubDirPath, replicaFolderSubDirPath);
                 }
                 catch (Exception ex)
@@ -102,7 +101,7 @@ namespace FolderSynchronization
                     _log.Warning($"Error processing directory : {ex.Message}");
                 }
             }
-
+          
             var replicaFolderSubDirsPath = Directory.GetDirectories(replicaFolderPath);
             foreach (var replicaFolderSubDirPath in replicaFolderSubDirsPath)
             {
@@ -113,6 +112,9 @@ namespace FolderSynchronization
                 {
                     try
                     {
+                        // Remove read-only attribute from all files first
+                        RemoveReadOnlyAttributes(replicaFolderSubDirPath);
+
                         Directory.Delete(replicaFolderSubDirPath, true);
                         _log.Debug($"Deleted directory operation : {replicaFolderSubDirPath}");
                     }
@@ -122,6 +124,22 @@ namespace FolderSynchronization
                     }
                 }
             }
+        }
+
+        private void RemoveReadOnlyAttributes(string folderPath)
+        {
+            foreach (var file in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+            }
+
+            foreach (var dir in Directory.GetDirectories(folderPath, "*", SearchOption.AllDirectories))
+            {
+                DirectoryInfo di = new DirectoryInfo(dir);
+                di.Attributes = FileAttributes.Normal;
+            }
+            DirectoryInfo rootDir = new DirectoryInfo(folderPath);
+            rootDir.Attributes = FileAttributes.Normal;
         }
     }
 }

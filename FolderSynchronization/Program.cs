@@ -17,18 +17,11 @@ namespace FolderSynchronization
                 return;
             }
 
-
-            if (!System.IO.Directory.Exists(sourceFolderPath) || !System.IO.Directory.Exists(replicFolderaPath))
-            {
-                Console.WriteLine($"Folder path does not exist: {sourceFolderPath}");
-                return;
-            }
-
-            // Initialize log 
+            // Initialize log class
             Log log = Log.Create(logFilePath);
             log.Debug("Folder synchronization started...");
 
-            // Initialize the FolderSynchronization 
+            // Initialize the FolderSynchronization class
             var folderSynchronization = new FolderSynchronization(log);
 
             while (true)
@@ -42,7 +35,7 @@ namespace FolderSynchronization
                     log.Warning($"Error during folder synchronization: {ex.Message}");
                 }
 
-                // Wait for the next interval
+                // Wait for the next synchronization interval
                 await Task.Delay(syncIntervalInSeconds * 1000);
             }
         }

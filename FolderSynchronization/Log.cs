@@ -16,27 +16,23 @@ namespace FolderSynchronization
         {
             string logFilePath = userLogFilePath;
 
-            try
-            {
-                string logDir = Path.GetDirectoryName(logFilePath);
-                if (!string.IsNullOrEmpty(logDir) && !Directory.Exists(logDir))
-                    Directory.CreateDirectory(logDir);
-
-                if (!File.Exists(logFilePath))
-                    File.WriteAllText(logFilePath, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
-
-                Console.WriteLine($"Log file path: {logFilePath}");
-            }
-            catch
+            // If the user-provided log file does not exist, use backup mechanism to create a log file in the executable folder
+            if (!File.Exists(logFilePath))
             {
                 string executionFolder = AppDomain.CurrentDomain.BaseDirectory;
                 string backupLogFile = Path.Combine(executionFolder, "sync_log.txt");
-                File.WriteAllText(backupLogFile, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
+
+                Console.WriteLine("User-provided log file does not exist or is inaccessible.");
+                Console.WriteLine($"Using backup log file in executable folder: {backupLogFile}");
+
                 logFilePath = backupLogFile;
-                Console.WriteLine("User-provided log file path was invalid or inaccessible.");
-                Console.WriteLine($"Using backup log file in executable folder: {logFilePath}");
+
+                // Ensure the backup file exists
+                if (!File.Exists(logFilePath))
+                    File.WriteAllText(logFilePath, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
             }
 
+            Console.WriteLine($"Log file path: {logFilePath}");
             return new Log(logFilePath);
         }
 
@@ -45,7 +41,7 @@ namespace FolderSynchronization
 
         private void LogMessage(string message, ConsoleColor color)
         {
-            string logMessage = $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} - {message}";
+            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
             Console.ForegroundColor = color;
             Console.WriteLine(logMessage);
             Console.ResetColor();

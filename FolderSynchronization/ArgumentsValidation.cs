@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace FolderSynchronization
 {
@@ -29,6 +30,18 @@ namespace FolderSynchronization
             if (!TryParseInterval(args[2], out intervalInSeconds, out var error))
             {
                 ShowErrorAndUsage(error);
+                return false;
+            }
+            // Validate folder existence
+            if (!Directory.Exists(sourceFolderPath))
+            {
+                ShowErrorAndUsage($"Source folder does not exist: {sourceFolderPath}");
+                return false;
+            }
+
+            if (!Directory.Exists(replicaFolderPath))
+            {
+                ShowErrorAndUsage($"Replica folder does not exist: {replicaFolderPath}");
                 return false;
             }
 
