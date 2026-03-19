@@ -12,32 +12,32 @@ namespace FolderSynchronization
             _logFilePath = logFilePath;
         }
 
-        public static Log Create(string userLogFile)
+        public static Log Create(string userLogFilePath)
         {
-            string logFile = userLogFile;
+            string logFilePath = userLogFilePath;
 
             try
             {
-                string logDir = Path.GetDirectoryName(logFile);
+                string logDir = Path.GetDirectoryName(logFilePath);
                 if (!string.IsNullOrEmpty(logDir) && !Directory.Exists(logDir))
                     Directory.CreateDirectory(logDir);
 
-                if (!File.Exists(logFile))
-                    File.WriteAllText(logFile, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
+                if (!File.Exists(logFilePath))
+                    File.WriteAllText(logFilePath, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
 
-                Console.WriteLine($"Log file path: {logFile}");
+                Console.WriteLine($"Log file path: {logFilePath}");
             }
             catch
             {
-                string exeFolder = AppDomain.CurrentDomain.BaseDirectory;
-                string fallbackLogFile = Path.Combine(exeFolder, "sync_log.txt");
-                File.WriteAllText(fallbackLogFile, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
-                logFile = fallbackLogFile;
+                string executionFolder = AppDomain.CurrentDomain.BaseDirectory;
+                string backupLogFile = Path.Combine(executionFolder, "sync_log.txt");
+                File.WriteAllText(backupLogFile, $"Log created at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}\n");
+                logFilePath = backupLogFile;
                 Console.WriteLine("User-provided log file path was invalid or inaccessible.");
-                Console.WriteLine($"Using fallback log file in executable folder: {logFile}");
+                Console.WriteLine($"Using backup log file in executable folder: {logFilePath}");
             }
 
-            return new Log(logFile);
+            return new Log(logFilePath);
         }
 
         public void Debug(string message) => LogMessage(message, ConsoleColor.White);
