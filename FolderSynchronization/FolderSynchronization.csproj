@@ -44,10 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentsValidator.cs" />
+    <Compile Include="ArgumentsValidation.cs" />
     <Compile Include="FileHelper.cs" />
-    <Compile Include="FolderSynchronizer.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="FolderSynchronization.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

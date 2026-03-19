@@ -3,16 +3,16 @@ using System.IO;
 
 namespace FolderSynchronization
 {
-    public class Logger
+    public class Log
     {
         private readonly string _logFilePath;
 
-        private Logger(string logFilePath)
+        private Log(string logFilePath)
         {
             _logFilePath = logFilePath;
         }
 
-        public static Logger Create(string userLogFile)
+        public static Log Create(string userLogFile)
         {
             string logFile = userLogFile;
 
@@ -37,13 +37,13 @@ namespace FolderSynchronization
                 Console.WriteLine($"Using fallback log file in executable folder: {logFile}");
             }
 
-            return new Logger(logFile);
+            return new Log(logFile);
         }
 
-        public void Debug(string message) => Log(message, ConsoleColor.White);
-        public void Warning(string message) => Log(message, ConsoleColor.Yellow);
+        public void Debug(string message) => LogMessage(message, ConsoleColor.White);
+        public void Warning(string message) => LogMessage(message, ConsoleColor.Yellow);
 
-        private void Log(string message, ConsoleColor color)
+        private void LogMessage(string message, ConsoleColor color)
         {
             string logMessage = $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} - {message}";
             Console.ForegroundColor = color;

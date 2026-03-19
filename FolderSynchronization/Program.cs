@@ -7,46 +7,43 @@ namespace FolderSynchronization
     {
         static async Task Main(string[] args)
         {
-            // Validate and parse arguments
-            if (!ArgumentsValidator.TryParse(args,
-                out string sourcePath,
-                out string replicaPath,
-                out int intervalSeconds,
+            // Validate command line arguments
+            if (!ArgumentsValidation.TryParse(args,
+                out string sourceFolderPath,
+                out string replicFolderaPath,
+                out int syncIntervalInSeconds,
                 out string logFilePath))
             {
-                return; // exit gracefully if arguments are invalid
-            }
-
-
-
-            // Check if source folder exists
-            if (!System.IO.Directory.Exists(sourcePath) || !System.IO.Directory.Exists(replicaPath))
-            {
-                Console.WriteLine($"Folder does not exist: {sourcePath}");
                 return;
             }
 
-            // Initialize logger
-            Logger logger = Logger.Create(logFilePath);
-            logger.Debug("Folder synchronization started...");
 
-            // Initialize the synchronizer
-            var synchronizer = new FolderSynchronizer(logger);
+            if (!System.IO.Directory.Exists(sourceFolderPath) || !System.IO.Directory.Exists(replicFolderaPath))
+            {
+                Console.WriteLine($"Folder path does not exist: {sourceFolderPath}");
+                return;
+            }
 
-            // Synchronization loop
+            // Initialize log 
+            Log log = Log.Create(logFilePath);
+            log.Debug("Folder synchronization started...");
+
+            // Initialize the FolderSynchronization 
+            var folderSynchronization = new FolderSynchronization(log);
+
             while (true)
             {
                 try
                 {
-                    synchronizer.SyncFolders(sourcePath, replicaPath);
+                    folderSynchronization.SyncFolders(sourceFolderPath, replicFolderaPath);
                 }
                 catch (Exception ex)
                 {
-                    logger.Warning($"Error during sync: {ex.Message}");
+                    log.Warning($"Error during folder synchronization: {ex.Message}");
                 }
 
                 // Wait for the next interval
-                await Task.Delay(intervalSeconds * 1000);
+                await Task.Delay(syncIntervalInSeconds * 1000);
             }
         }
     }
